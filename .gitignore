@@ -1,0 +1,87 @@
+# =====================================
+# PYTHON
+# =====================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Entorno virtual
+venv/
+.env
+.env.local
+.env.prod
+.env.dev
+
+# =====================================
+# DJANGO
+# =====================================
+*.log
+*.pot
+*.pyc
+*.sqlite3
+*.pickle
+
+# Archivos generados por Django
+staticfiles/
+media/
+
+# Archivos temporales de Django
+*.mo
+
+# =====================================
+# MYSQL
+# =====================================
+# No ignores dumps, solo DB locales si existieran
+*.mysql
+*.sql~
+*.db
+
+# =====================================
+# IDE / EDITORES
+# =====================================
+
+# Visual Studio Code
+.vscode/
+.history/
+
+# PyCharm
+.idea/
+*.iml
+
+# =====================================
+# SISTEMA OPERATIVO
+# =====================================
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# =====================================
+# ARCHIVOS DE DEPLOY
+# =====================================
+# Gunicorn, Nginx, etc (si los agregas después)
+*.pid
+
+# =====================================
+# ARCHIVOS DEL PROYECTO
+# =====================================
+# Archivos de compilación o empaquetado
+dist/
+build/
+*.egg-info/
+
+# =====================================
+# NODE / FRONTEND (si en el futuro agregas algún build)
+# =====================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
