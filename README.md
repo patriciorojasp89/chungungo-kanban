@@ -1,69 +1,112 @@
-# 🦦 Chungungo – Kanban Task Manager
+# 🦦 Chungungo Kanban
 
-**Chungungo** es una aplicación web estilo Kanban que permite organizar tareas dentro de tableros y columnas de manera visual e intuitiva.  
-Cada usuario puede crear sus propios tableros, definir columnas (To Do, Doing, Done u otras) y gestionar tareas con prioridad, etiquetas y fecha límite.
+Chungungo Kanban es una aplicación web tipo **tablero Kanban** (similar a Trello) para organizar tareas en tableros y columnas.  
+Está pensada como proyecto final de un **bootcamp Fullstack** y como pieza de **portafolio profesional**.
 
-Este proyecto se desarrolla como parte del proyecto final de un bootcamp Fullstack, y también está pensado como una pieza fuerte de portafolio para postulación laboral en desarrollo web.
+Permite:
 
----
-
-## ✨ Características principales
-
-- Registro, inicio y cierre de sesión.
-- Cada usuario administra sus propios tableros.
-- Tableros personalizables con múltiples columnas.
-- Tareas con:
-  - Título y descripción.
-  - Prioridad (baja, media, alta).
-  - Fecha límite opcional.
-  - Etiquetas reutilizables.
-- Vista estilo **Kanban** (tablero visual).
-- CRUD completo de tableros, columnas, tareas y etiquetas.
-- Panel de administración de Django.
+- Crear tableros personales
+- Organizar tareas en columnas (To Do, Doing, Done, etc.)
+- Asignar prioridad, fecha límite y etiquetas a cada tarea
+- Mover tareas entre columnas con **drag & drop**, guardando los cambios en la base de datos
+- Filtrar tareas por **prioridad, etiqueta y vencimiento** en tiempo real
 
 ---
 
-## 🛠️ Stack tecnológico
+## ⭐ Características principales
 
-- **Backend:** Python + Django
-- **Base de datos:** MySQL
-- **Frontend:** HTML / CSS (Bootstrap o similar)
-- **Servidor:** Linux (Google Cloud)
-- **Control de versiones:** Git + GitHub
-
----
-
-## 🚧 Estado del proyecto
-
-Actualmente en desarrollo.  
-El foco está en:
-
-- Modelos y relaciones bien definidas.
-- Autenticación y control de acceso por usuario.
-- CRUD limpio y funcional.
-- Arquitectura clara para demostrar conocimientos de backend, BD y despliegue.
-
----
-
-## ▶️ Cómo ejecutar (modo desarrollo)
-
-> Estas instrucciones se completarán en las próximas etapas del proyecto.
-
-1. Clonar este repositorio  
-2. Crear y activar entorno virtual  
-3. Instalar dependencias desde `requirements.txt`  
-4. Configurar conexión a MySQL  
-5. Aplicar migraciones  
-6. Levantar servidor de desarrollo de Django  
+- Autenticación de usuarios (registro / login / logout)
+- CRUD completo de:
+  - Tableros
+  - Columnas
+  - Tareas
+  - Etiquetas (tags) desde la interfaz (sin usar admin)
+- Tablero Kanban:
+  - Columnas en scroll horizontal
+  - Tarjetas de tareas con:
+    - Prioridad (Alta/Media/Baja) con colores
+    - Fecha límite
+    - Etiquetas con color
+  - Drag & drop:
+    - Mover tareas entre columnas
+    - Reordenar tareas dentro de la misma columna
+    - Cambios persistentes en la base de datos
+- Filtros de tareas (sin recargar la página):
+  - Por prioridad
+  - Por etiqueta
+  - Por vencimiento:
+    - Vencidas
+    - Para hoy
+    - Futuras
+    - Sin fecha
+- Panel de administración de Django para gestión avanzada
+- Diseño responsive con **Bootstrap 5**
+- Código organizado y modular (apps, views genéricas, templates heredados)
 
 ---
 
-## 📁 Estructura del repositorio
+## 🧰 Stack tecnológico
 
-```text
-chungungo-kanban/
-├── backend/
-├── docs/
-├── .gitignore
-├── README.md
-└── requirements.txt
+**Backend**
+
+- Python 3.x
+- Django 3.2
+- MySQL como base de datos
+- ORM de Django
+
+**Frontend**
+
+- HTML5, CSS3
+- Bootstrap 5
+- Bootstrap Icons
+- JavaScript (ES6): drag & drop, filtros dinámicos
+
+**Infraestructura / Deployment**
+
+- Servidor en Google Cloud (Linux)
+- `virtualenv` / `venv` para entorno virtual
+- Configuración preparada para servir archivos estáticos
+
+---
+
+## 🏗️ Arquitectura general
+
+- Proyecto Django: `chungungo`
+- App principal: `boards`
+
+Modelos principales (resumen):
+
+- `Board`
+  - `name`, `description`, `owner (User)`
+- `Column`
+  - `name`, `position`, `board (FK)`
+- `Tag`
+  - `name`, `color`, `owner (User)`
+- `Task`
+  - `title`, `description`
+  - `priority` (H/M/L)
+  - `due_date`
+  - `position`
+  - `column (FK)`
+  - `tags (ManyToMany)`
+
+Vistas:
+
+- Class-based views para CRUD (ListView, CreateView, UpdateView, DeleteView)
+- Vista `move_task` (API simple tipo JSON) para recibir drag & drop
+
+Frontend:
+
+- Templates organizados en `templates/boards/`
+- `base.html` como layout principal
+- `static/js/kanban.js` para drag & drop y filtros
+
+---
+
+## 🚀 Puesta en marcha (desarrollo local)
+
+### 1. Clonar repositorio
+
+```bash
+git clone https://github.com/patriciorojasp89/chungungo-kanban
+cd chungungo-kanban/backend

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Crear tablero</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Nombre</label>
+        {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_description" class="form-label">Descripción (opcional)</label>
+        {{ form.description }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'board_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

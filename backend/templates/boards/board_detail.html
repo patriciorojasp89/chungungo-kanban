@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">{{ board.name }}</h2>
+
+<p class="text-muted">{{ board.description }}</p>
+
+<hr>
+
+
+<div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+    <strong>Filtrar tareas:</strong>
+
+   
+    <select id="priority-filter" class="form-select form-select-sm" style="width: 180px;">
+        <option value="">Todas las prioridades</option>
+        <option value="H">Alta</option>
+        <option value="M">Media</option>
+        <option value="L">Baja</option>
+    </select>
+        
+    <select id="due-filter" class="form-select form-select-sm" style="width: 180px;">
+        <option value="">Todas las fechas</option>
+        <option value="overdue">Vencidas</option>
+        <option value="today">Para hoy</option>
+        <option value="future">Futuras</option>
+        <option value="none">Sin fecha</option>
+    </select>
+
+    
+    <select id="tag-filter" class="form-select form-select-sm" style="width: 220px;">
+        <option value="">Todas las etiquetas</option>
+    </select>
+</div>
+
+<h4>Columnas del tablero</h4>
+
+{% if columns %}
+    <div class="kanban-board">
+        {% for column in columns %}
+            <div class="kanban-column">
+                <div class="card">
+                    <div class="card-body">
+
+                        
+                        <h5 class="mb-1">{{ column.name }}</h5>
+                        <small class="text-muted">Posición: {{ column.position }}</small>
+
+                        
+                        <div class="mt-2 d-flex gap-1">
+                            <a href="{% url 'column_edit' column.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                            <a href="{% url 'column_delete' column.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                        </div>
+
+                        
+                        <a href="{% url 'task_create' column.id %}"
+                           class="btn btn-sm btn-primary mt-3 mb-3 w-100">
+                            + Añadir tarea
+                        </a>
+
+                        
+                        <div class="kanban-tasks droppable-column" data-column-id="{{ column.id }}">
+
+                            {% for task in column.tasks.all %}
+                                
+                                <div class="card kanban-task-card p-2 mb-2 task-card"
+                                     draggable="true"
+                                     data-task-id="{{ task.id }}"
+                                     data-priority="{{ task.priority }}"
+                                     data-tags="{% for tag in task.tags.all %}{{ tag.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                     data-due="{% if task.due_date %}{{ task.due_date|date:'Y-m-d' }}{% endif %}">
+
+                                    <div class="d-flex justify-content-between">
+                                        <strong>{{ task.title }}</strong>
+
+                                        {% if task.priority == "H" %}
+                                            <span class="badge bg-danger">{{ task.get_priority_display }}</span>
+                                        {% elif task.priority == "M" %}
+                                            <span class="badge bg-warning text-dark">{{ task.get_priority_display }}</span>
+                                        {% else %}
+                                            <span class="badge bg-success">{{ task.get_priority_display }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if task.due_date %}
+                                        <small class="text-muted">📅 {{ task.due_date|date:"d-m-Y" }}</small><br>
+                                    {% endif %}
+
+                                    {% if task.tags.all %}
+                                        <div class="mt-1">
+                                            {% for tag in task.tags.all %}
+                                                <span class="badge"
+                                                      style="background: {{ tag.color }}; color: white;">
+                                                    {{ tag.name }}
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="mt-2 d-flex gap-1">
+                                        <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                        <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                                    </div>
+
+                                </div>
+                            {% empty %}
+                                <p class="text-muted">No hay tareas en esta columna.</p>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No hay columnas todavía.</p>
+{% endif %}
+
+
+<a href="{% url 'column_create' board.id %}" class="btn btn-primary">+ Añadir columna</a>
+<a href="{% url 'board_list' %}" class="btn btn-secondary">Volver</a>
+
+{% endblock %}

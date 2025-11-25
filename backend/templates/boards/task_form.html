@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Añadir tarea a "{{ column.name }}"</h2>
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <strong>Hay errores en el formulario:</strong>
+        <ul class="mb-0">
+            {% for field, errors in form.errors.items %}
+                <li>
+                    <strong>{{ field }}:</strong> {{ errors|striptags }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'board_detail' column.board.id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

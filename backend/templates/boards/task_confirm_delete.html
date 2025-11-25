@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Eliminar tarea</h2>
+
+<p>¿Deseas eliminar la tarea <strong>{{ object.title }}</strong>?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+    <a href="{% url 'board_detail' object.column.board.id %}" class="btn btn-secondary">
+        Cancelar
+    </a>
+</form>
+{% endblock %}

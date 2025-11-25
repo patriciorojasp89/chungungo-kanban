@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Mis tableros</h2>
+    <a href="{% url 'board_create' %}" class="btn btn-primary">
+        + Crear tablero
+    </a>
+</div>
+
+{% if boards %}
+    <div class="row">
+        {% for board in boards %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ board.name }}</h5>
+                        {% if board.description %}
+                            <p class="card-text text-muted">
+                                {{ board.description|truncatewords:20 }}
+                            </p>
+                        {% endif %}
+                         <a href="{% url 'board_edit' board.id %}" class="btn btn-sm btn-secondary">Editar</a>
+                         <a href="{% url 'board_delete' board.id %}"class="btn btn-sm btn-danger">Eliminar</a>
+                         <a href="{% url 'board_detail' board.id %}" class="btn btn-sm btn-primary mt-2">Ver tablero</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Creado: {{ board.created_at|date:"d-m-Y H:i" }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No tienes tableros creados todavía.</p>
+    <p class="text-muted">
+        Más adelante agregaremos un botón para crear tu primer tablero.
+    </p>
+{% endif %}
+{% endblock %}

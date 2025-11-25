@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Añadir columna a "{{ board.name }}"</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Nombre de la columna</label>
+        {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_position" class="form-label">Posición</label>
+        {{ form.position }}
+        <div class="form-text">
+            Número para ordenar las columnas (1, 2, 3...).
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'board_detail' board.id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

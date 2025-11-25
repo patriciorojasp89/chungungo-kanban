@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Crear etiqueta</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Nombre</label>
+        {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_color" class="form-label">Color (hex)</label>
+        {{ form.color }}
+        <div class="form-text">
+            Ejemplo: <code>#ff0000</code> para rojo. Luego se verá en las tareas.
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'tag_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
