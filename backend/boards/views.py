@@ -10,6 +10,9 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import json
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
 
@@ -215,6 +218,22 @@ class TagDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Tag.objects.filter(owner=self.request.user)
+
+
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Tu cuenta fue creada correctamente. Ahora puedes iniciar sesión."
+            )
+            return redirect("login")  # nombre de la URL de django.contrib.auth.urls
+    else:
+        form = UserCreationForm()
+
+    return render(request, "registration/signup.html", {"form": form})
 
 
 

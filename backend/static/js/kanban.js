@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 draggedCard = card;
                 e.dataTransfer.effectAllowed = "move";
+                document.body.classList.add("is-dragging");
 
                 // Imagen sólida para arrastrar
                 const dragImage = card.cloneNode(true);
@@ -56,17 +57,33 @@ document.addEventListener("DOMContentLoaded", function () {
             card.addEventListener("dragend", function () {
                 console.log("dragend");
                 draggedCard = null;
+                document.body.classList.remove("is-dragging");
+                document.querySelectorAll(".droppable-column.drag-over")
+                    .forEach(c => c.classList.remove("drag-over"));
             });
         });
 
         // ---------- Eventos de drop ----------
         columns.forEach(col => {
             col.addEventListener("dragover", function (e) {
+                // Permitimos soltar aquí
                 e.preventDefault();
-            });
+                // Indicamos que la operación es "move"
+                e.dataTransfer.dropEffect = "move";
+    });
+
+            col.addEventListener("dragenter", function (e) {
+                e.preventDefault();
+                col.classList.add("drag-over");
+    });
+
+            col.addEventListener("dragleave", function (e) {
+                col.classList.remove("drag-over");
+    });
 
             col.addEventListener("drop", function (e) {
                 e.preventDefault();
+                col.classList.remove("drag-over");
                 if (!draggedCard) return;
 
                 const taskId = draggedCard.dataset.taskId;

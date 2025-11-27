@@ -1,33 +1,69 @@
-{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión – Chungungo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-4">
-        <h2 class="mb-4 text-center">Iniciar sesión</h2>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-        {% if form.errors %}
-            <div class="alert alert-danger">
-                Usuario o contraseña incorrectos. Inténtalo de nuevo.
-            </div>
-        {% endif %}
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}?v=3">
+</head>
 
-        <form method="post" novalidate>
-            {% csrf_token %}
+<body class="auth-body">
 
-            <div class="mb-3">
-                <label for="id_username" class="form-label">Usuario</label>
-                {{ form.username }}
-            </div>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark auth-navbar px-3">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="bi"></i>🦦 Chungungo
+        </a>
 
-            <div class="mb-3">
-                <label for="id_password" class="form-label">Contraseña</label>
-                {{ form.password }}
-            </div>
+        <div class="ms-auto">
+            <a href="{% url 'signup' %}" class="auth-link">Crear cuenta</a>
+        </div>
+    </nav>
 
-            <button type="submit" class="btn btn-primary w-100">
-                Entrar
-            </button>
-        </form>
+    <!-- CONTENEDOR DEL FORM -->
+    <div class="auth-wrapper d-flex justify-content-center align-items-center">
+
+        <div class="auth-box">
+            <h2 class="auth-title">Iniciar sesión</h2>
+
+            <p class="auth-subtitle">
+                Ingresa tus datos para continuar organizando tus proyectos al estilo del chungungo.
+            </p>
+
+            {% if form.errors %}
+                <div class="alert alert-danger py-2">
+                    Usuario o contraseña incorrectos.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <label class="auth-label">Nombre de usuario</label>
+                <input type="text" name="username" autofocus required class="auth-input" />
+
+                <label class="auth-label mt-3">Contraseña</label>
+                <input type="password" name="password" required class="auth-input" />
+
+                <button class="btn btn-primary w-100 mt-4 auth-btn">
+                    Entrar
+                </button>
+            </form>
+
+            <p class="auth-bottom-text mt-3">
+                ¿No tienes cuenta?  
+                <a href="{% url 'signup' %}" class="auth-link">Crear una aquí</a>.
+            </p>
+        </div>
+
     </div>
-</div>
-{% endblock %}
+
+</body>
+</html>

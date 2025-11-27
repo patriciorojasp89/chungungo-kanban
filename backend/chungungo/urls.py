@@ -15,9 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from boards import views as boards_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # SIGNUP PRIMERO
+    path('accounts/signup/', boards_views.signup, name='signup'),
+
+    # Auth de Django
     path('accounts/', include('django.contrib.auth.urls')),
-    path("", include("boards.urls")),
+
+    # boards ahora con prefijo /boards/
+    path('boards/', include('boards.urls')),
+
+    # Landing page en la raíz
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]

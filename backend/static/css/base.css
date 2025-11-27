@@ -1,0 +1,416 @@
+/* ========= ESTILO GLOBAL ========= */
+
+body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    background: #020617;          /* fondo oscuro por defecto */
+    color: #e5e7eb;               /* texto claro por defecto */
+}
+
+/* Si quieres que los links no sean azules estridentes */
+a {
+    color: #38bdf8;
+}
+a:hover {
+    color: #0ea5e9;
+}
+
+/* ========= KANBAN (board_detail) ========= */
+
+/* Contenedor horizontal tipo Kanban */
+.kanban-board {
+    display: flex;
+    gap: 1.2rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1rem 0;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+
+/* Columnas */
+.kanban-column {
+    min-width: 280px;
+    max-width: 340px;
+    flex: 0 0 auto;
+}
+
+.kanban-column .card {
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Contenedor de tareas dentro de una columna */
+.kanban-tasks {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 6px;
+    scrollbar-width: thin;
+}
+
+/* Card de tarea */
+.kanban-task-card {
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e1e1e1;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Hover sobre tareas */
+.kanban-task-card:hover {
+    background: #f7f7f7;
+}
+
+/* Hover sobre columna */
+.kanban-column .card:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* ========= LISTA DE TABLEROS (boards) ========= */
+
+.boards-header {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.boards-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f9fafb;
+}
+
+.boards-subtitle {
+    font-size: 0.96rem;
+    color: #9ca3af;
+}
+
+.boards-new-btn {
+    font-weight: 600;
+}
+
+/* Grid de tableros */
+.boards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Tarjeta de tablero */
+.board-card {
+    background: #020617;
+    border-radius: 14px;
+    padding: 1.4rem 1.3rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.65);
+    color: #e5e7eb;
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+                border-color 0.15s ease, background 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.board-card:hover {
+    transform: translateY(-4px);
+    border-color: #38bdf8;
+    box-shadow: 0 22px 55px rgba(15, 23, 42, 0.9);
+    background: #02081f;
+}
+
+.board-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: #f9fafb;
+}
+
+.board-card-desc {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 0.9rem;
+}
+
+.board-card-footer {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.board-card-meta {
+    opacity: 0.8;
+}
+
+/* Estado vacío */
+.boards-empty {
+    margin-top: 3rem;
+    padding: 2.5rem 1.5rem;
+    background: #020617;
+    border-radius: 1rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.65);
+}
+
+.boards-empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.7rem;
+    color: #f9fafb;
+}
+
+.boards-empty-text {
+    font-size: 0.95rem;
+    color: #9ca3af;
+}
+
+/* ========= FONDO COMPLETO PARA /boards/ ========= */
+
+.boards-full {
+    position: relative;
+    min-height: calc(100vh - 60px); /* ocupa toda la pantalla menos el navbar */
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Fondo a pantalla completa */
+.boards-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("../img/chungungo_boards_bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+/* Capa oscura encima del fondo */
+.boards-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 2;
+}
+
+/* Contenedor del contenido */
+.boards-content {
+    position: relative;
+    z-index: 3;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+main-full {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* ====== CREAR / EDITAR TABLERO ====== */
+
+.board-form-page {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 60px); /* alto minus navbar */
+    overflow: hidden;
+}
+
+.board-form-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("../img/chungungo_board_form_bg.jpg"); /* <-- nombre imagen */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.board-form-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 2;
+}
+
+.board-form-content {
+    position: relative;
+    z-index: 3;
+    min-height: calc(100vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.board-form-card {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(15, 23, 42, 0.94);
+    border-radius: 18px;
+    padding: 2rem 2.2rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
+}
+
+.board-form-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.board-form-subtitle {
+    font-size: 0.95rem;
+    color: #9ca3af;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.board-form-card label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #e5e7eb;
+    margin-bottom: 0.25rem;
+}
+
+.board-form-card input[type="text"],
+.board-form-card textarea {
+    background: #020617;
+    border: 1px solid #1f2937;
+    color: #e5e7eb;
+    border-radius: 0.6rem;
+}
+
+.board-form-card input[type="text"]:focus,
+.board-form-card textarea:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    background: #020617;
+    color: #f9fafb;
+}
+
+.board-form-card .form-text {
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.board-form-card .btn-primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    font-weight: 600;
+}
+
+.board-form-card .btn-primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.board-form-card .btn-outline-light {
+    border-color: rgba(148, 163, 184, 0.6);
+    color: #e5e7eb;
+}
+
+.board-form-card .btn-outline-light:hover {
+    background: rgba(148, 163, 184, 0.12);
+}
+
+/* ====== BOARD DETAIL PAGE ====== */
+
+.board-detail-page {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 60px); /* navbar ~60px */
+    overflow: hidden;
+}
+
+.board-detail-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("../img/chungungo_board_detail_bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.board-detail-overlay {
+    position: absolute;
+    inset: 0;
+    
+    background: linear-gradient(
+        to bottom,
+        rgba(2, 6, 23, 0.5) 0%,
+        rgba(2, 6, 23, 0.5) 35%,
+        rgba(2, 6, 23, 0.5) 100%
+    );
+    backdrop-filter: blur(2px);
+    z-index: 2;
+}
+
+.board-detail-content {
+    position: relative;
+    z-index: 3;
+    padding: 2.5rem 1.5rem 3rem;
+}
+
+/* Encabezado */
+.board-detail-header {
+    margin-bottom: 0.5rem;
+}
+
+.board-detail-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #f9fafb;
+}
+
+.board-detail-subtitle {
+    margin-top: 0.4rem;
+    font-size: 0.97rem;
+    color: #f9fafb;
+    max-width: 620px;
+}
+
+.board-detail-actions .btn {
+    font-size: 0.8rem;
+}
+
+/* Panel contenedor del kanban */
+.board-detail-panel {
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 18px;
+    padding: 1.5rem 1.4rem 1.6rem;
+    border: 1px solid rgba(4, 4, 4, 0.45);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.9);
+}
+
+/* Opcional: ajusta un poco el padding del kanban dentro del panel */
+.board-detail-panel .kanban-board {
+    padding-top: 0.2rem;
+}
+
+
+/* Estado global cuando se está arrastrando una tarjeta */
+body.is-dragging {
+    cursor: not-allowed; /* similar al icono rojo de "no" */
+}
+
+/* Las columnas que aceptan drop muestran otro cursor */
+body.is-dragging .droppable-column {
+    cursor: default;
+}
+
+/* Columna cuando estás encima con una tarjeta */
+.droppable-column.drag-over {
+    outline: 2px dashed #38bdf8;
+    outline-offset: 4px;
+    background-color: rgba(15, 23, 42, 0.55);
+    transition: background-color 0.15s ease, outline 0.15s ease;
+}

@@ -1,124 +1,143 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="mb-4">{{ board.name }}</h2>
 
-<p class="text-muted">{{ board.description }}</p>
+<section class="board-detail-page">
 
-<hr>
+    <!-- Fondo -->
+    <div class="board-detail-bg"></div>
+    <div class="board-detail-overlay"></div>
 
+    <div class="board-detail-content">
+        <div class="container">
 
-<div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
-    <strong>Filtrar tareas:</strong>
+            <!-- HERO DEL TABLERO -->
+            <header class="board-detail-header d-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="board-detail-title">{{ board.name }}</h1>
 
-   
-    <select id="priority-filter" class="form-select form-select-sm" style="width: 180px;">
-        <option value="">Todas las prioridades</option>
-        <option value="H">Alta</option>
-        <option value="M">Media</option>
-        <option value="L">Baja</option>
-    </select>
-        
-    <select id="due-filter" class="form-select form-select-sm" style="width: 180px;">
-        <option value="">Todas las fechas</option>
-        <option value="overdue">Vencidas</option>
-        <option value="today">Para hoy</option>
-        <option value="future">Futuras</option>
-        <option value="none">Sin fecha</option>
-    </select>
+                    {% if board.description %}
+                        <p class="board-detail-subtitle">
+                            {{ board.description }}
+                        </p>
+                    {% else %}
+                        <p class="board-detail-subtitle">
+                            Tablero sin descripción todavía. Organiza tus tareas al estilo chungungo.
+                        </p>
+                    {% endif %}
+                </div>
 
-    
-    <select id="tag-filter" class="form-select form-select-sm" style="width: 220px;">
-        <option value="">Todas las etiquetas</option>
-    </select>
-</div>
+                <div class="d-flex gap-2 board-detail-actions">
+                    <a href="{% url 'board_edit' board.pk %}" class="btn btn-outline-light btn-sm">
+                        Editar tablero
+                    </a>
+                    <a href="{% url 'board_delete' board.pk %}" class="btn btn-outline-danger btn-sm">
+                        Eliminar
+                    </a>
+                    <a href="{% url 'board_list' %}" class="btn btn-secondary btn-sm">
+                        Volver a tableros
+                    </a>
+                </div>
+            </header>
 
-<h4>Columnas del tablero</h4>
+            <!-- PANEL DEL KANBAN -->
+            <div class="board-detail-panel mt-3">
 
-{% if columns %}
-    <div class="kanban-board">
-        {% for column in columns %}
-            <div class="kanban-column">
-                <div class="card">
-                    <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="mb-0 text-muted small">
+                        Arrastra las tarjetas entre columnas y mantén tus proyectos fluyendo.
+                    </p>
+                    <a href="{% url 'column_create' board_pk=board.pk %}" class="btn btn-primary btn-sm">
+                        + Nueva columna
+                    </a>
+                </div>
 
-                        
-                        <h5 class="mb-1">{{ column.name }}</h5>
-                        <small class="text-muted">Posición: {{ column.position }}</small>
+                {# TABLERO KANBAN #}
+                {% if columns %}
+                    <div class="kanban-board mt-4">
+                        {% for column in columns %}
+                            <div class="kanban-column">
+                                <div class="card bg-dark border-0 shadow-sm h-100">
 
-                        
-                        <div class="mt-2 d-flex gap-1">
-                            <a href="{% url 'column_edit' column.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
-                            <a href="{% url 'column_delete' column.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                        </div>
+                                    {# Cabecera de la columna #}
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 text-light">{{ column.name }}</h5>
 
-                        
-                        <a href="{% url 'task_create' column.id %}"
-                           class="btn btn-sm btn-primary mt-3 mb-3 w-100">
-                            + Añadir tarea
-                        </a>
-
-                        
-                        <div class="kanban-tasks droppable-column" data-column-id="{{ column.id }}">
-
-                            {% for task in column.tasks.all %}
-                                
-                                <div class="card kanban-task-card p-2 mb-2 task-card"
-                                     draggable="true"
-                                     data-task-id="{{ task.id }}"
-                                     data-priority="{{ task.priority }}"
-                                     data-tags="{% for tag in task.tags.all %}{{ tag.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                     data-due="{% if task.due_date %}{{ task.due_date|date:'Y-m-d' }}{% endif %}">
-
-                                    <div class="d-flex justify-content-between">
-                                        <strong>{{ task.title }}</strong>
-
-                                        {% if task.priority == "H" %}
-                                            <span class="badge bg-danger">{{ task.get_priority_display }}</span>
-                                        {% elif task.priority == "M" %}
-                                            <span class="badge bg-warning text-dark">{{ task.get_priority_display }}</span>
-                                        {% else %}
-                                            <span class="badge bg-success">{{ task.get_priority_display }}</span>
-                                        {% endif %}
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'column_edit' column.pk %}"
+                                               class="btn btn-outline-light">
+                                                Editar
+                                            </a>
+                                            <a href="{% url 'column_delete' column.pk %}"
+                                               class="btn btn-outline-danger">
+                                                Eliminar
+                                            </a>
+                                        </div>
                                     </div>
 
-                                    {% if task.due_date %}
-                                        <small class="text-muted">📅 {{ task.due_date|date:"d-m-Y" }}</small><br>
-                                    {% endif %}
+                                    {# CUERPO: zona de drop #}
+                                    <div class="card-body kanban-tasks droppable-column"
+                                         data-column-id="{{ column.pk }}">
 
-                                    {% if task.tags.all %}
-                                        <div class="mt-1">
-                                            {% for tag in task.tags.all %}
-                                                <span class="badge"
-                                                      style="background: {{ tag.color }}; color: white;">
-                                                    {{ tag.name }}
-                                                </span>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
+                                        {% for task in column.tasks.all %}
+                                            <div class="kanban-task-card task-card mb-2 p-2"
+                                                 draggable="true"
+                                                 data-task-id="{{ task.pk }}"
+                                                 data-priority="{{ task.priority }}"
+                                                 data-tags="{{ task.tags_list }}"
+                                                 data-due="{{ task.due_date|date:'Y-m-d' }}">
 
-                                    <div class="mt-2 d-flex gap-1">
-                                        <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
-                                        <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <strong>{{ task.title }}</strong><br>
+                                                        {% if task.description %}
+                                                            <small class="text-muted">{{ task.description }}</small>
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <div class="btn-group btn-group-sm ms-2">
+                                                        <a href="{% url 'task_edit' task.pk %}"
+                                                           class="btn btn-outline-secondary">
+                                                            Editar
+                                                        </a>
+                                                        <a href="{% url 'task_delete' task.pk %}"
+                                                           class="btn btn-outline-danger">
+                                                            X
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        {% empty %}
+                                            <p class="text-muted small mb-0">
+                                                Sin tareas todavía.
+                                            </p>
+                                        {% endfor %}
+                                    </div>
+
+                                    {# Pie de la columna #}
+                                    <div class="card-footer bg-transparent">
+                                        <a href="{% url 'task_create' column_pk=column.pk %}"
+                                           class="btn btn-outline-primary w-100 btn-sm">
+                                            + Nueva tarea
+                                        </a>
                                     </div>
 
                                 </div>
-                            {% empty %}
-                                <p class="text-muted">No hay tareas en esta columna.</p>
-                            {% endfor %}
-                        </div>
-
+                            </div>
+                        {% endfor %}
                     </div>
-                </div>
+                {% else %}
+                    <p class="text-muted mb-0">
+                        Este tablero aún no tiene columnas. Crea tu primera columna para empezar.
+                    </p>
+                {% endif %}
+
             </div>
-        {% endfor %}
+
+        </div>
     </div>
-{% else %}
-    <p>No hay columnas todavía.</p>
-{% endif %}
 
-
-<a href="{% url 'column_create' board.id %}" class="btn btn-primary">+ Añadir columna</a>
-<a href="{% url 'board_list' %}" class="btn btn-secondary">Volver</a>
+</section>
 
 {% endblock %}

@@ -1,40 +1,61 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Mis tableros</h2>
-    <a href="{% url 'board_create' %}" class="btn btn-primary">
-        + Crear tablero
-    </a>
-</div>
 
-{% if boards %}
-    <div class="row">
-        {% for board in boards %}
-            <div class="col-md-4 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ board.name }}</h5>
-                        {% if board.description %}
-                            <p class="card-text text-muted">
-                                {{ board.description|truncatewords:20 }}
-                            </p>
-                        {% endif %}
-                         <a href="{% url 'board_edit' board.id %}" class="btn btn-sm btn-secondary">Editar</a>
-                         <a href="{% url 'board_delete' board.id %}"class="btn btn-sm btn-danger">Eliminar</a>
-                         <a href="{% url 'board_detail' board.id %}" class="btn btn-sm btn-primary mt-2">Ver tablero</a>
-                    </div>
-                    <div class="card-footer text-muted">
-                        Creado: {{ board.created_at|date:"d-m-Y H:i" }}
-                    </div>
+<section class="boards-full">
+
+    <!-- Fondo -->
+    <div class="boards-bg"></div>
+    <div class="boards-overlay"></div>
+
+    <!-- Contenido centrado -->
+    <div class="boards-content">
+        <div class="container">
+
+            <div class="boards-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="boards-title">Tus tableros</h1>
+                    <p class="boards-subtitle">
+                        Mantén tus proyectos fluyendo como un chungungo entre las rocas.
+                    </p>
                 </div>
+                <a href="{% url 'board_create' %}" class="btn btn-primary boards-new-btn">
+                    + Nuevo tablero
+                </a>
             </div>
-        {% endfor %}
+
+            {% if boards %}
+                <div class="boards-grid">
+                    {% for board in boards %}
+                        
+                        <a href="{% url 'board_detail' board.pk %}" class="board-card text-decoration-none">
+                            <div>
+                                <h5 class="board-card-title">{{ board.name }}</h5>
+                                <p class="board-card-desc">
+                                    {{ board.description|default:"Sin descripción todavía." }}
+                                </p>
+                            </div>
+                            <p class="board-card-footer">
+                                Creado el {{ board.created_at|date:"d/m/Y" }}
+                            </p>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="boards-empty text-center">
+                    <h2 class="boards-empty-title">Aún no tienes tableros</h2>
+                    <p class="boards-empty-text">
+                        Crea tu primer tablero y empieza a organizarte al estilo del chungungo.
+                    </p>
+                    <a href="{% url 'board_create' %}" class="btn btn-primary btn-lg mt-2">
+                        Crear mi primer tablero
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
     </div>
-{% else %}
-    <p>No tienes tableros creados todavía.</p>
-    <p class="text-muted">
-        Más adelante agregaremos un botón para crear tu primer tablero.
-    </p>
-{% endif %}
+
+</section>
+
 {% endblock %}

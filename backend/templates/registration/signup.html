@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Override del padding global -->
+<style>
+    main.container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+</style>
+
+<div class="auth-full">
+    <div class="auth-bg"></div>
+    <div class="auth-overlay"></div>
+
+    <div class="auth-content">
+        <div class="auth-card">
+            <h1 class="auth-title">CREAR CUENTA</h1>
+            <p class="auth-subtitle">
+                Regístrate para empezar a organizar tus proyectos como un chungungo:
+                pequeño, ágil y siempre en movimiento.
+            </p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Usuario -->
+                <div class="mb-3">
+                    <label class="form-label">Nombre de usuario</label>
+                    {{ form.username }}
+                    <div class="form-hint">Será el nombre que verás dentro de la app.</div>
+                    {% if form.username.errors %}
+                        <div class="text-danger small">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    {{ form.password1 }}
+                    <div class="form-hint">Mínimo 8 caracteres. Usa una combinación de letras y números.</div>
+                    {% if form.password1.errors %}
+                        <div class="text-danger small">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Confirmación -->
+                <div class="mb-3">
+                    <label class="form-label">Repite la contraseña</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <div class="text-danger small">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 my-3">Crear cuenta</button>
+
+                <p class="text-center small">
+                    ¿Ya tienes cuenta?
+                    <a href="{% url 'login' %}">Inicia sesión aquí</a>.
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
