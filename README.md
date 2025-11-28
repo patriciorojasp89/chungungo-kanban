@@ -1,4 +1,4 @@
-# 🦦 Chungungo Kanban
+# 🦦 Chungungo Kanban // http://35.192.220.54/
 
 Chungungo Kanban es una aplicación web tipo **tablero Kanban** (similar a Trello) para organizar tareas en tableros y columnas.  
 Está pensada como proyecto final de un **bootcamp Fullstack** y como pieza de **portafolio profesional**.
