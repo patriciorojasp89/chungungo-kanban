@@ -44,13 +44,65 @@
             <div class="board-detail-panel mt-3">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="mb-0 text-muted small">
+                    <p class="mb-0 text-light small">
                         Arrastra las tarjetas entre columnas y mantén tus proyectos fluyendo.
                     </p>
                     <a href="{% url 'column_create' board_pk=board.pk %}" class="btn btn-primary btn-sm">
                         + Nueva columna
                     </a>
                 </div>
+
+                {# FILTROS (NUEVO) #}
+                <form method="get" class="row g-2 align-items-end mb-3">
+
+                    <!-- Filtro por prioridad -->
+                    <div class="col-auto">
+                        <label for="filter-priority" class="form-label mb-0 text-light">Prioridad</label>
+                        <select name="priority" id="filter-priority" class="form-select form-select-sm">
+                            <option value="">Todas</option>
+                            <option value="H" {% if active_filters.priority == "H" %}selected{% endif %}>Alta</option>
+                            <option value="M" {% if active_filters.priority == "M" %}selected{% endif %}>Media</option>
+                            <option value="L" {% if active_filters.priority == "L" %}selected{% endif %}>Baja</option>
+                        </select>
+                    </div>
+
+                    <!-- Filtro por etiqueta -->
+                    <div class="col-auto">
+                        <label for="filter-tag" class="form-label mb-0 text-light">Etiqueta</label>
+                        <select name="tag" id="filter-tag" class="form-select form-select-sm">
+                            <option value="">Todas</option>
+                            {% for tag in available_tags %}
+                                <option value="{{ tag.id }}"
+                                        {% if active_filters.tag == tag.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ tag.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Filtro por fecha -->
+                    <div class="col-auto">
+                        <label for="filter-due" class="form-label mb-0 text-light">Vencimiento</label>
+                        <select name="due" id="filter-due" class="form-select form-select-sm">
+                            <option value="">Todas</option>
+                            <option value="overdue" {% if active_filters.due == "overdue" %}selected{% endif %}>Vencidas</option>
+                            <option value="today" {% if active_filters.due == "today" %}selected{% endif %}>Hoy</option>
+                            <option value="future" {% if active_filters.due == "future" %}selected{% endif %}>Futuras</option>
+                            <option value="none" {% if active_filters.due == "none" %}selected{% endif %}>Sin fecha</option>
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            Aplicar filtros
+                        </button>
+                        <a href="{% url 'board_detail' board.pk %}" class="btn btn-sm btn-outline-secondary">
+                            Limpiar
+                        </a>
+                    </div>
+
+                </form>
 
                 {# TABLERO KANBAN #}
                 {% if columns %}
@@ -79,40 +131,166 @@
                                     <div class="card-body kanban-tasks droppable-column"
                                          data-column-id="{{ column.pk }}">
 
-                                        {% for task in column.tasks.all %}
-                                            <div class="kanban-task-card task-card mb-2 p-2"
-                                                 draggable="true"
-                                                 data-task-id="{{ task.pk }}"
-                                                 data-priority="{{ task.priority }}"
-                                                 data-tags="{{ task.tags_list }}"
-                                                 data-due="{{ task.due_date|date:'Y-m-d' }}">
+                                        {# SIN FILTROS => comportamiento original (column.tasks.all) #}
+                                        {% if not active_filters.priority and not active_filters.tag and not active_filters.due %}
 
-                                                <div class="d-flex justify-content-between">
-                                                    <div>
-                                                        <strong>{{ task.title }}</strong><br>
-                                                        {% if task.description %}
-                                                            <small class="text-muted">{{ task.description }}</small>
-                                                        {% endif %}
+                                            {% for task in column.tasks.all %}
+                                                <div class="kanban-task-card task-card mb-2 p-2"
+                                                     draggable="true"
+                                                     data-task-id="{{ task.pk }}"
+                                                     data-priority="{{ task.priority }}"
+                                                     data-tags="{{ task.tags_list }}"
+                                                     data-due="{{ task.due_date|date:'Y-m-d' }}">
+
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>
+                                                            <strong>{{ task.title }}</strong><br>
+                                                            {% if task.description %}
+                                                                <small class="text-muted">{{ task.description }}</small>
+                                                            {% endif %}
+
+                                                            {# Fecha de vencimiento (visible) #}
+                                                            {% if task.due_date %}
+                                                                <div class="mt-1 small text-muted">
+                                                                    Vence: {{ task.due_date|date:"d/m/Y" }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {# Etiquetas visibles #}
+                                                            <div class="mt-1">
+                                                                {% for tag in task.tags.all %}
+                                                                    <span class="badge rounded-pill bg-secondary">
+                                                                        {{ tag.name }}
+                                                                    </span>
+                                                                {% empty %}
+                                                                    {# sin etiquetas, no mostramos nada #}
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="text-end ms-2">
+
+                                                            {# Prioridad visible #}
+                                                            {% if task.priority %}
+                                                                <div class="mb-1">
+                                                                    <span class="badge
+                                                                        {% if task.priority == 'H' %} bg-danger
+                                                                        {% elif task.priority == 'M' %} bg-warning text-dark
+                                                                        {% else %} bg-secondary
+                                                                        {% endif %}
+                                                                    ">
+                                                                        {% if task.priority == 'H' %}
+                                                                            Alta
+                                                                        {% elif task.priority == 'M' %}
+                                                                            Media
+                                                                        {% else %}
+                                                                            Baja
+                                                                        {% endif %}
+                                                                    </span>
+                                                                </div>
+                                                            {% endif %}
+
+                                                            <div class="btn-group btn-group-sm">
+                                                                <a href="{% url 'task_edit' task.pk %}"
+                                                                   class="btn btn-outline-secondary">
+                                                                    Editar
+                                                                </a>
+                                                                <a href="{% url 'task_delete' task.pk %}"
+                                                                   class="btn btn-outline-danger">
+                                                                    X
+                                                                </a>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
-                                                    <div class="btn-group btn-group-sm ms-2">
-                                                        <a href="{% url 'task_edit' task.pk %}"
-                                                           class="btn btn-outline-secondary">
-                                                            Editar
-                                                        </a>
-                                                        <a href="{% url 'task_delete' task.pk %}"
-                                                           class="btn btn-outline-danger">
-                                                            X
-                                                        </a>
-                                                    </div>
                                                 </div>
+                                            {% empty %}
+                                                <p class="text-muted small mb-0">
+                                                    Sin tareas todavía.
+                                                </p>
+                                            {% endfor %}
 
-                                            </div>
-                                        {% empty %}
-                                            <p class="text-muted small mb-0">
-                                                Sin tareas todavía.
-                                            </p>
-                                        {% endfor %}
+                                        {# CON FILTROS => usamos tasks_filtered (ya filtradas en la vista) #}
+                                        {% else %}
+
+                                            {% with found=0 %}
+                                                {% for task in tasks_filtered %}
+                                                    {% if task.column_id == column.pk %}
+                                                        <div class="kanban-task-card task-card mb-2 p-2"
+                                                             draggable="true"
+                                                             data-task-id="{{ task.pk }}"
+                                                             data-priority="{{ task.priority }}"
+                                                             data-tags="{{ task.tags_list }}"
+                                                             data-due="{{ task.due_date|date:'Y-m-d' }}">
+
+                                                            <div class="d-flex justify-content-between">
+                                                                <div>
+                                                                    <strong>{{ task.title }}</strong><br>
+                                                                    {% if task.description %}
+                                                                        <small class="text-muted">{{ task.description }}</small>
+                                                                    {% endif %}
+
+                                                                    {# Fecha de vencimiento (visible) #}
+                                                                    {% if task.due_date %}
+                                                                        <div class="mt-1 small text-muted">
+                                                                            Vence: {{ task.due_date|date:"d/m/Y" }}
+                                                                        </div>
+                                                                    {% endif %}
+
+                                                                    {# Etiquetas visibles #}
+                                                                    <div class="mt-1">
+                                                                        {% for tag in task.tags.all %}
+                                                                            <span class="badge rounded-pill bg-secondary">
+                                                                                {{ tag.name }}
+                                                                            </span>
+                                                                        {% empty %}
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="text-end ms-2">
+
+                                                                    {# Prioridad visible #}
+                                                                    {% if task.priority %}
+                                                                        <div class="mb-1">
+                                                                            <span class="badge
+                                                                                {% if task.priority == 'H' %} bg-danger
+                                                                                {% elif task.priority == 'M' %} bg-warning text-dark
+                                                                                {% else %} bg-secondary
+                                                                                {% endif %}
+                                                                            ">
+                                                                                {% if task.priority == 'H' %}
+                                                                                    Alta
+                                                                                {% elif task.priority == 'M' %}
+                                                                                    Media
+                                                                                {% else %}
+                                                                                    Baja
+                                                                                {% endif %}
+                                                                            </span>
+                                                                        </div>
+                                                                    {% endif %}
+
+                                                                    <div class="btn-group btn-group-sm">
+                                                                        <a href="{% url 'task_edit' task.pk %}"
+                                                                           class="btn btn-outline-secondary">
+                                                                            Editar
+                                                                        </a>
+                                                                        <a href="{% url 'task_delete' task.pk %}"
+                                                                           class="btn btn-outline-danger">
+                                                                            X
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    {% endif %}
+                                                {% empty %}
+                                                    {# si no hay tasks_filtered globalmente, no mostramos nada aquí #}
+                                                {% endfor %}
+                                            {% endwith %}
+
+                                        {% endif %}
                                     </div>
 
                                     {# Pie de la columna #}

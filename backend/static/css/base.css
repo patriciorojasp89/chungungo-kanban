@@ -1,14 +1,12 @@
 /* ========= ESTILO GLOBAL ========= */
-
 body {
     margin: 0;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
-    background: #020617;          /* fondo oscuro por defecto */
-    color: #e5e7eb;               /* texto claro por defecto */
+    background: #020617;
+    color: #e5e7eb;
 }
 
-/* Si quieres que los links no sean azules estridentes */
 a {
     color: #38bdf8;
 }
@@ -18,7 +16,6 @@ a:hover {
 
 /* ========= KANBAN (board_detail) ========= */
 
-/* Contenedor horizontal tipo Kanban */
 .kanban-board {
     display: flex;
     gap: 1.2rem;
@@ -28,7 +25,6 @@ a:hover {
     scroll-behavior: smooth;
 }
 
-/* Columnas */
 .kanban-column {
     min-width: 280px;
     max-width: 340px;
@@ -40,7 +36,6 @@ a:hover {
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-/* Contenedor de tareas dentro de una columna */
 .kanban-tasks {
     max-height: 60vh;
     overflow-y: auto;
@@ -48,7 +43,6 @@ a:hover {
     scrollbar-width: thin;
 }
 
-/* Card de tarea */
 .kanban-task-card {
     border-radius: 8px;
     background: #ffffff;
@@ -56,17 +50,15 @@ a:hover {
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* Hover sobre tareas */
 .kanban-task-card:hover {
     background: #f7f7f7;
 }
 
-/* Hover sobre columna */
 .kanban-column .card:hover {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.18);
 }
 
-/* ========= LISTA DE TABLEROS (boards) ========= */
+/* ========= LISTA DE TABLEROS ========= */
 
 .boards-header {
     margin-top: 1rem;
@@ -90,14 +82,12 @@ a:hover {
     font-weight: 600;
 }
 
-/* Grid de tableros */
 .boards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
 }
 
-/* Tarjeta de tablero */
 .board-card {
     background: #020617;
     border-radius: 14px;
@@ -141,7 +131,6 @@ a:hover {
     opacity: 0.8;
 }
 
-/* Estado vacío */
 .boards-empty {
     margin-top: 3rem;
     padding: 2.5rem 1.5rem;
@@ -163,16 +152,15 @@ a:hover {
     color: #9ca3af;
 }
 
-/* ========= FONDO COMPLETO PARA /boards/ ========= */
+/* ========= FONDO COMPLETO boards ========= */
 
 .boards-full {
     position: relative;
-    min-height: calc(100vh - 60px); /* ocupa toda la pantalla menos el navbar */
+    min-height: calc(100vh - 60px);
     width: 100%;
     overflow: hidden;
 }
 
-/* Fondo a pantalla completa */
 .boards-bg {
     position: absolute;
     inset: 0;
@@ -183,7 +171,6 @@ a:hover {
     z-index: 1;
 }
 
-/* Capa oscura encima del fondo */
 .boards-overlay {
     position: absolute;
     inset: 0;
@@ -192,7 +179,6 @@ a:hover {
     z-index: 2;
 }
 
-/* Contenedor del contenido */
 .boards-content {
     position: relative;
     z-index: 3;
@@ -211,14 +197,14 @@ main-full {
 .board-form-page {
     position: relative;
     width: 100%;
-    min-height: calc(100vh - 60px); /* alto minus navbar */
+    min-height: calc(100vh - 60px);
     overflow: hidden;
 }
 
 .board-form-bg {
     position: absolute;
     inset: 0;
-    background-image: url("../img/chungungo_board_form_bg.jpg"); /* <-- nombre imagen */
+    background-image: url("../img/chungungo_board_form_bg.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -324,7 +310,7 @@ main-full {
 .board-detail-page {
     position: relative;
     width: 100%;
-    min-height: calc(100vh - 60px); /* navbar ~60px */
+    min-height: calc(100vh - 60px);
     overflow: hidden;
 }
 
@@ -341,7 +327,6 @@ main-full {
 .board-detail-overlay {
     position: absolute;
     inset: 0;
-    
     background: linear-gradient(
         to bottom,
         rgba(2, 6, 23, 0.5) 0%,
@@ -358,7 +343,6 @@ main-full {
     padding: 2.5rem 1.5rem 3rem;
 }
 
-/* Encabezado */
 .board-detail-header {
     margin-bottom: 0.5rem;
 }
@@ -382,7 +366,6 @@ main-full {
     font-size: 0.8rem;
 }
 
-/* Panel contenedor del kanban */
 .board-detail-panel {
     background: rgba(15, 23, 42, 0.96);
     border-radius: 18px;
@@ -391,26 +374,236 @@ main-full {
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.9);
 }
 
-/* Opcional: ajusta un poco el padding del kanban dentro del panel */
 .board-detail-panel .kanban-board {
     padding-top: 0.2rem;
 }
 
-
-/* Estado global cuando se está arrastrando una tarjeta */
 body.is-dragging {
-    cursor: not-allowed; /* similar al icono rojo de "no" */
+    cursor: not-allowed;
 }
 
-/* Las columnas que aceptan drop muestran otro cursor */
 body.is-dragging .droppable-column {
     cursor: default;
 }
 
-/* Columna cuando estás encima con una tarjeta */
 .droppable-column.drag-over {
     outline: 2px dashed #38bdf8;
     outline-offset: 4px;
     background-color: rgba(15, 23, 42, 0.55);
     transition: background-color 0.15s ease, outline 0.15s ease;
+}
+
+/* ============================================================
+   CONFIRM DELETE - layout independiente
+   ============================================================ */
+
+.confirm-page {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 4rem;
+}
+
+.confirm-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.confirm-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 2;
+}
+
+.confirm-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 680px;
+}
+
+.confirm-card {
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 18px;
+    padding: 2rem 2rem;
+    border: 1px solid rgba(4, 4, 4, 0.45);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.9);
+    color: #f9fafb;
+}
+
+.confirm-card h4 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* ====== CONFIRM PAGE - fondo a pantalla completa ====== */
+
+.confirm-page {
+    position: relative;
+    min-height: 100vh;
+    z-index: 0;
+}
+
+/* Este div será el fondo real de la página de confirmación */
+.confirm-bg {
+    position: fixed;         /* se pega a la ventana */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;             /* queda detrás del contenido */
+}
+
+/* Capa oscura encima del fondo, opcional */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: -1;             /* misma capa que el fondo, pero encima de la imagen */
+}
+
+/* Contenido encima de todo */
+.confirm-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* ================== LISTA DE ETIQUETAS ================== */
+
+.tags-page {
+    position: relative;
+    min-height: calc(100vh - 60px);
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Fondo específico para etiquetas */
+.tags-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("../img/chungungo_tags_bg.jpg"); /* pon aquí tu imagen */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.tags-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.70);
+    backdrop-filter: blur(2px);
+    z-index: 2;
+}
+
+.tags-content {
+    position: relative;
+    z-index: 3;
+    padding: 2.5rem 1.5rem 3rem;
+}
+
+/* Cabecera de la página de etiquetas */
+.tags-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.tags-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #f9fafb;
+}
+
+.tags-subtitle {
+    font-size: 0.95rem;
+    color: #9ca3af;
+}
+
+/* Tarjeta que envuelve la tabla */
+.tags-card {
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 18px;
+    padding: 1.5rem 1.5rem 1.3rem;
+    border: 1px solid rgba(4, 4, 4, 0.45);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.9);
+}
+
+/* Tabla de etiquetas */
+.tags-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e5e7eb;
+    font-size: 0.92rem;
+}
+
+.tags-table thead {
+    background: rgba(15, 23, 42, 0.9);
+}
+
+.tags-table th,
+.tags-table td {
+    padding: 0.6rem 0.8rem;
+}
+
+.tags-table th {
+    font-weight: 600;
+    color: #9ca3af;
+    border-bottom: 1px solid #1f2937;
+}
+
+.tags-table tbody tr:nth-child(odd) {
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.tags-table tbody tr:nth-child(even) {
+    background: rgba(15, 23, 42, 0.65);
+}
+
+.tags-table tbody tr:hover {
+    background: rgba(30, 64, 175, 0.55);
+}
+
+/* Badge de color */
+.tag-color-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #0f172a;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.2);
+}
+
+/* Botones de acciones */
+.tags-actions .btn {
+    font-size: 0.78rem;
+    padding: 0.18rem 0.55rem;
+}
+
+/* Botón volver */
+.tags-back-btn {
+    margin-top: 1rem;
 }

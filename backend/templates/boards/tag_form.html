@@ -1,25 +1,60 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<h2 class="mb-4">Crear etiqueta</h2>
 
-<form method="post">
-    {% csrf_token %}
+<section class="board-form-page">
 
-    <div class="mb-3">
-        <label for="id_name" class="form-label">Nombre</label>
-        {{ form.name }}
-    </div>
+    <div class="board-form-bg"></div>
+    <div class="board-form-overlay"></div>
 
-    <div class="mb-3">
-        <label for="id_color" class="form-label">Color (hex)</label>
-        {{ form.color }}
-        <div class="form-text">
-            Ejemplo: <code>#ff0000</code> para rojo. Luego se verá en las tareas.
+    <div class="board-form-content">
+        <div class="board-form-card">
+
+            {% if object %}
+                <h1 class="board-form-title">Editar etiqueta</h1>
+                <p class="board-form-subtitle">
+                    Ajusta el nombre o color de esta etiqueta.
+                </p>
+            {% else %}
+                <h1 class="board-form-title">Crear etiqueta</h1>
+                <p class="board-form-subtitle">
+                    Crea una nueva etiqueta para organizar tus tareas visualmente.
+                </p>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="mb-3">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small mt-1">{{ form.name.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.color.label_tag }}
+                    {{ form.color }}
+                    {% if form.color.errors %}
+                        <div class="text-danger small mt-1">{{ form.color.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-2">
+                    {% if object %}Guardar cambios{% else %}Crear etiqueta{% endif %}
+                </button>
+
+                <a href="{% url 'tag_list' %}" class="btn btn-outline-light w-100">
+                    Cancelar
+                </a>
+            </form>
+
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="{% url 'tag_list' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+</section>
+
 {% endblock %}

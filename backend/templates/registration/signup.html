@@ -1,69 +1,109 @@
-{% extends "base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear cuenta – Chungungo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{% block content %}
-<!-- Override del padding global -->
-<style>
-    main.container {
-        max-width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-</style>
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
-<div class="auth-full">
-    <div class="auth-bg"></div>
-    <div class="auth-overlay"></div>
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <div class="auth-content">
-        <div class="auth-card">
-            <h1 class="auth-title">CREAR CUENTA</h1>
+    <!-- CSS de auth (igual que login) -->
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}?v=3">
+</head>
+
+<body class="auth-body">
+
+    <!-- FONDO -->
+    <div class="auth-bg-image"
+         style="background-image: url('{% static 'img/auth_bg.jpg' %}');">
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark auth-navbar px-3">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            🦦 Chungungo
+        </a>
+
+        <div class="ms-auto">
+            <a href="{% url 'login' %}" class="auth-link">Iniciar sesión</a>
+        </div>
+    </nav>
+
+    <!-- CONTENEDOR -->
+    <div class="auth-wrapper d-flex justify-content-center align-items-center">
+
+        <div class="auth-box">
+            <h2 class="auth-title">Crear cuenta</h2>
+
             <p class="auth-subtitle">
-                Regístrate para empezar a organizar tus proyectos como un chungungo:
-                pequeño, ágil y siempre en movimiento.
+                Regístrate para comenzar a organizar tus proyectos al estilo del chungungo.
             </p>
 
             <form method="post" novalidate>
                 {% csrf_token %}
 
                 <!-- Usuario -->
-                <div class="mb-3">
-                    <label class="form-label">Nombre de usuario</label>
-                    {{ form.username }}
-                    <div class="form-hint">Será el nombre que verás dentro de la app.</div>
-                    {% if form.username.errors %}
-                        <div class="text-danger small">{{ form.username.errors.0 }}</div>
-                    {% endif %}
-                </div>
+                <label class="auth-label mt-2">Nombre de usuario</label>
+                <input
+                    type="text"
+                    name="{{ form.username.html_name }}"
+                    value="{{ form.username.value|default:'' }}"
+                    class="auth-input"
+                    required
+                >
+                {% if form.username.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.username.errors.0 }}
+                    </div>
+                {% endif %}
 
-                <!-- Password -->
-                <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
-                    {{ form.password1 }}
-                    <div class="form-hint">Mínimo 8 caracteres. Usa una combinación de letras y números.</div>
-                    {% if form.password1.errors %}
-                        <div class="text-danger small">{{ form.password1.errors.0 }}</div>
-                    {% endif %}
-                </div>
+                <!-- Contraseña -->
+                <label class="auth-label mt-3">Contraseña</label>
+                <input
+                    type="password"
+                    name="{{ form.password1.html_name }}"
+                    class="auth-input"
+                    required
+                >
+                {% if form.password1.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.password1.errors.0 }}
+                    </div>
+                {% endif %}
 
                 <!-- Confirmación -->
-                <div class="mb-3">
-                    <label class="form-label">Repite la contraseña</label>
-                    {{ form.password2 }}
-                    {% if form.password2.errors %}
-                        <div class="text-danger small">{{ form.password2.errors.0 }}</div>
-                    {% endif %}
-                </div>
+                <label class="auth-label mt-3">Repite la contraseña</label>
+                <input
+                    type="password"
+                    name="{{ form.password2.html_name }}"
+                    class="auth-input"
+                    required
+                >
+                {% if form.password2.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.password2.errors.0 }}
+                    </div>
+                {% endif %}
 
-                <button type="submit" class="btn btn-primary w-100 my-3">Crear cuenta</button>
-
-                <p class="text-center small">
-                    ¿Ya tienes cuenta?
-                    <a href="{% url 'login' %}">Inicia sesión aquí</a>.
-                </p>
+                <button class="btn btn-primary w-100 mt-4 auth-btn">
+                    Crear cuenta
+                </button>
             </form>
-        </div>
-    </div>
-</div>
 
-{% endblock %}
+            <p class="auth-bottom-text mt-3">
+                ¿Ya tienes cuenta?
+                <a href="{% url 'login' %}" class="auth-link">Inicia sesión aquí</a>.
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

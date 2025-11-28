@@ -13,6 +13,9 @@ import json
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from datetime import date
+from .forms import BoardForm, ColumnForm, TagForm, TaskForm
+
 
 
 
@@ -29,7 +32,7 @@ class BoardListView(LoginRequiredMixin, ListView):
 class BoardCreateView(LoginRequiredMixin, CreateView):
     model = Board
     template_name = "boards/board_form.html"
-    fields = ["name", "description"]
+    form_class = BoardForm
     success_url = reverse_lazy("board_list")
 
     def form_valid(self, form):
@@ -39,7 +42,7 @@ class BoardCreateView(LoginRequiredMixin, CreateView):
 class BoardUpdateView(LoginRequiredMixin, UpdateView):
     model = Board
     template_name = "boards/board_form.html"
-    fields = ["name", "description"]
+    form_class = BoardForm
     success_url = reverse_lazy("board_list")
 
     def get_queryset(self):
@@ -63,13 +66,60 @@ class BoardDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["columns"] = self.object.columns.all().order_by("position")
+        board = self.object  # tablero actual
+
+        # Columnas del tablero
+        context["columns"] = board.columns.all().order_by("position")
+
+        # 1) Tareas base del tablero
+        tasks_qs = (
+            Task.objects
+            .filter(column__board=board)
+            .select_related("column")
+            .prefetch_related("tags")
+        )
+
+        # 2) Leer filtros desde la URL
+        priority = self.request.GET.get("priority")  # 'H', 'M', 'L' o None
+        tag_id = self.request.GET.get("tag")         # id de Tag o None
+        due = self.request.GET.get("due")            # 'overdue', 'today', 'future', 'none' o None
+
+        # 3) Filtro por prioridad
+        if priority:
+            tasks_qs = tasks_qs.filter(priority=priority)
+
+        # 4) Filtro por etiqueta
+        if tag_id:
+            tasks_qs = tasks_qs.filter(tags__id=tag_id)
+
+        # 5) Filtro por fecha de vencimiento
+        today = date.today()
+        if due == "overdue":
+            tasks_qs = tasks_qs.filter(due_date__lt=today)
+        elif due == "today":
+            tasks_qs = tasks_qs.filter(due_date=today)
+        elif due == "future":
+            tasks_qs = tasks_qs.filter(due_date__gt=today)
+        elif due == "none":
+            tasks_qs = tasks_qs.filter(due_date__isnull=True)
+
+        # 6) Pasar info al template
+        context["tasks_filtered"] = tasks_qs
+        context["available_tags"] = Tag.objects.filter(owner=self.request.user)
+        context["active_filters"] = {
+            "priority": priority,
+            "tag": tag_id,
+            "due": due,
+        }
+
         return context
+
+
 
 class ColumnCreateView(LoginRequiredMixin, CreateView):
     model = Column
     template_name = "boards/column_form.html"
-    fields = ["name", "position"]
+    form_class = ColumnForm
 
     def dispatch(self, request, *args, **kwargs):
         self.board = get_object_or_404(
@@ -95,7 +145,7 @@ class ColumnCreateView(LoginRequiredMixin, CreateView):
 class ColumnUpdateView(LoginRequiredMixin, UpdateView):
     model = Column
     template_name = "boards/column_form.html"
-    fields = ["name", "position"]
+    form_class = ColumnForm
 
     def get_queryset(self):
         return Column.objects.filter(board__owner=self.request.user)
@@ -192,7 +242,7 @@ class TagListView(LoginRequiredMixin, ListView):
 class TagCreateView(LoginRequiredMixin, CreateView):
     model = Tag
     template_name = "boards/tag_form.html"
-    fields = ["name", "color"]
+    form_class = TagForm
     success_url = reverse_lazy("tag_list")
 
     def form_valid(self, form):
@@ -203,7 +253,7 @@ class TagCreateView(LoginRequiredMixin, CreateView):
 class TagUpdateView(LoginRequiredMixin, UpdateView):
     model = Tag
     template_name = "boards/tag_form.html"
-    fields = ["name", "color"]
+    form_class = TagForm
     success_url = reverse_lazy("tag_list")
 
     def get_queryset(self):

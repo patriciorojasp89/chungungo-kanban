@@ -1,24 +1,94 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<h2 class="mb-4">Añadir tarea a "{{ column.name }}"</h2>
-{% if form.errors %}
-    <div class="alert alert-danger">
-        <strong>Hay errores en el formulario:</strong>
-        <ul class="mb-0">
-            {% for field, errors in form.errors.items %}
-                <li>
-                    <strong>{{ field }}:</strong> {{ errors|striptags }}
-                </li>
-            {% endfor %}
-        </ul>
+
+<section class="board-form-page">
+
+    <div class="board-form-bg"></div>
+    <div class="board-form-overlay"></div>
+
+    <div class="board-form-content">
+        <div class="board-form-card">
+
+            {% if object %}
+                <h1 class="board-form-title">Editar tarea</h1>
+                <p class="board-form-subtitle">
+                    Modifica cualquier detalle de esta tarea.
+                </p>
+            {% else %}
+                <h1 class="board-form-title">Crear tarea</h1>
+                <p class="board-form-subtitle">
+                    Agrega una nueva tarea a tu tablero.
+                </p>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="mb-3">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="text-danger small mt-1">{{ form.title.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-danger small mt-1">{{ form.description.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.due_date.label_tag }}
+                    {{ form.due_date }}
+                    {% if form.due_date.errors %}
+                        <div class="text-danger small mt-1">{{ form.due_date.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.priority.label_tag }}
+                    {{ form.priority }}
+                    {% if form.priority.errors %}
+                        <div class="text-danger small mt-1">{{ form.priority.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.tags.label_tag }}
+                    {{ form.tags }}
+                    {% if form.tags.errors %}
+                        <div class="text-danger small mt-1">{{ form.tags.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                {% if form.column %}
+                <div class="mb-3">
+                    {{ form.column.label_tag }}
+                    {{ form.column }}
+                    {% if form.column.errors %}
+                        <div class="text-danger small mt-1">{{ form.column.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary w-100 mb-2">
+                    {% if object %}Guardar cambios{% else %}Crear tarea{% endif %}
+                </button>
+
+                <a href="{% url 'board_detail' column.board.pk %}" class="btn btn-outline-light w-100">
+                    Cancelar
+                </a>
+            </form>
+
+        </div>
     </div>
-{% endif %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="{% url 'board_detail' column.board.id %}" class="btn btn-secondary">Cancelar</a>
-</form>
+
+</section>
+
 {% endblock %}
